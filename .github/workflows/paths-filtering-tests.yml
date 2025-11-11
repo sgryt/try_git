@@ -14,7 +14,7 @@ jobs:
     permissions:
       pull-requests: read
     outputs:
-      audited: ${{ steps.filter.outputs.audited }}      
+      required: ${{ steps.filter.outputs.audited == 'true' || steps.filter.outputs.self == 'true' }}
     steps:
       # For pull requests it's not necessary to checkout the code
       - uses: dorny/paths-filter@v3
@@ -25,13 +25,15 @@ jobs:
               - '**'
               - '!(*)'
               - '!(.github/workflows/**)'
+            self:
               - '.github/workflows/paths-filtering-tests.yml'
+          predicate-quantifier: 'every'
 
   # run only if 'audited' files were changed
   some-other-job:
     needs: changes
     name: build
-    if: ${{ needs.changes.outputs.audited == 'true' }}
+    if: ${{ needs.changes.outputs.required }}
     runs-on: ubuntu-latest
     steps:
       - run: echo Audited files were changed!
@@ -39,7 +41,7 @@ jobs:
   some-other-job-no-op:
     needs: changes
     name: build
-    if: ${{ needs.changes.outputs.audited != 'true' }}
+    if: ${{ !needs.changes.outputs.required }}
     runs-on: ubuntu-latest
     steps:
-      - run: No-op
+      - run: echo No-op
