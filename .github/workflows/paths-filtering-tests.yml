@@ -33,7 +33,7 @@ jobs:
   some-other-job:
     needs: changes
     name: build
-    if: ${{ needs.changes.outputs.required }}
+    if: ${{ needs.changes.outputs.required == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - run: echo Audited files were changed!
@@ -41,7 +41,7 @@ jobs:
   some-other-job-no-op:
     needs: changes
     name: build
-    if: ${{ !needs.changes.outputs.required }}
+    if: ${{ needs.changes.outputs.required != 'true' }}
     runs-on: ubuntu-latest
     steps:
       - run: echo No-op
