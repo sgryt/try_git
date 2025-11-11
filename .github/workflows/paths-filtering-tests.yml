@@ -26,6 +26,7 @@ jobs:
               - '!(*)'
               - '!(.github/workflows/**)'
               - '.github/workflows/paths-filtering-tests.yml'
+          predicate-quantifier: 'every'
 
   # run only if 'audited' files were changed
   some-other-job:
