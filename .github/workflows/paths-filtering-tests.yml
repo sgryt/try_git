@@ -43,4 +43,4 @@ jobs:
     if: ${{ needs.changes.outputs.audited != 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - run: No-op
+      - run: echo No-op
