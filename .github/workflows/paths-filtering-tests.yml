@@ -38,7 +38,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo Required files were changed!
-      - run: exit 1
   # A no-op variant of the required status check that is used if no 'inScope' files were changed
   in-scope-noop:
     # This job consumes the output of the 'changes' job
