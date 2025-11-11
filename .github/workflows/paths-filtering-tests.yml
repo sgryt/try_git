@@ -30,7 +30,7 @@ jobs:
   # run only if 'audited' files were changed
   some-other-job:
     needs: changes
-    name: a-required-status-check
+    name: build
     if: ${{ needs.changes.outputs.audited == 'true' }}
     runs-on: ubuntu-latest
     steps:
@@ -38,7 +38,7 @@ jobs:
   # run no-op variant if no 'audited' files were changed
   some-other-job-no-op:
     needs: changes
-    name: a-required-status-check
+    name: build
     if: ${{ needs.changes.outputs.audited != 'true' }}
     runs-on: ubuntu-latest
     steps:
