@@ -49,4 +49,4 @@ jobs:
     if: ${{ needs.changes.outputs.inScope != 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - run: echo No-op
+      - run: echo Status check was skipped as the changes were not in scope
