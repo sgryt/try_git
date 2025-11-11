@@ -29,6 +29,8 @@ jobs:
               - '.github/workflows/paths-filtering-tests.yml'
           predicate-quantifier: 'every'
 
+  # This comment was added to test the self-change detection in isolation
+
   # run only if 'audited' files were changed
   some-other-job:
     needs: changes
