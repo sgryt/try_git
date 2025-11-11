@@ -49,6 +49,7 @@ jobs:
   # The job with name matching the required status check
   build:
     needs: [some-lenghty-job-that-is-required-when-changes-are-in-scope, some-lenghty-job-that-is-required-when-changes-are-in-scope-no-op]
+    if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
       - run: exit 0
