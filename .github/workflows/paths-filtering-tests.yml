@@ -34,8 +34,6 @@ jobs:
   some-lenghty-job-that-is-required-when-changes-are-in-scope:
     # This job consumes the output of the 'changes' job
     needs: changes
-      # The required status check name MUST MATCH what is set up in the GitHub UI
-    name: build
     if: ${{ needs.changes.outputs.inScope == 'true' }}
     runs-on: ubuntu-latest
     steps:
@@ -44,9 +42,12 @@ jobs:
   some-lenghty-job-that-is-required-when-changes-are-in-scope-no-op:
     # This job consumes the output of the 'changes' job
     needs: changes
-      # The no-op variant MUST HAVE the same name as the required status check it is skipping
-    name: build
     if: ${{ needs.changes.outputs.inScope != 'true' }}
     runs-on: ubuntu-latest
     steps:
       - run: echo Status check was skipped as the changes were not in scope
+  # The job with name matching the required status check
+  build:
+    if: ${{ always() }}
+    needs: [some-lenghty-job-that-is-required-when-changes-are-in-scope, some-lenghty-job-that-is-required-when-changes-are-in-scope-no-op]
+    runs-on: ubuntu-latest
