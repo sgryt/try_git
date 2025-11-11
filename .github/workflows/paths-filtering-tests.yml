@@ -1,49 +1,52 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Paths Filtering Tests
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "master" branch
   pull_request:
     branches: [ "master" ]
 
 jobs:
+  # A job that determines if the changes are in scope for this particular workflow
   changes:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: read
-    outputs:
-      required: ${{ steps.filter.outputs.audited == 'true' || steps.filter.outputs.self == 'true' }}
     steps:
       # For pull requests it's not necessary to checkout the code
       - uses: dorny/paths-filter@v3
         id: filter
         with:
           filters: |
-            audited:
+            sourceCode:
+              # Everything
               - '**'
+              # Except stuff at the root of the repo
               - '!*'
+              # Exclude changes to workflows in general
               - '!.github/workflows/**'
             self:
+              # Include changes to THIS workflow
               - '.github/workflows/paths-filtering-tests.yml'
           predicate-quantifier: 'every'
+    outputs:
+      inScope: ${{ steps.filter.outputs.sourceCode == 'true' || steps.filter.outputs.self == 'true' }}
 
-  # This comment was added to test the self-change detection in isolation
-
-  # run only if 'audited' files were changed
-  some-other-job:
+  # A required status check for when 'inScope' files are changed
+  some-lenghty-job-that-is-required-when-changes-are-in-scope:
+    # This job consumes the output of the 'changes' job
     needs: changes
+      # The required status check name MUST MATCH what is set up in the GitHub UI
     name: build
-    if: ${{ needs.changes.outputs.required == 'true' }}
+    if: ${{ needs.changes.outputs.inScope == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - run: echo Audited files were changed!
-  # run no-op variant if no 'audited' files were changed
-  some-other-job-no-op:
+      - run: echo Required files were changed!
+  # A no-op variant of the required status check that is used if no 'inScope' files were changed
+  some-lenghty-job-that-is-required-when-changes-are-in-scope-no-op:
+    # This job consumes the output of the 'changes' job
     needs: changes
+      # The no-op variant MUST HAVE the same name as the required status check it is skipping
     name: build
-    if: ${{ needs.changes.outputs.required != 'true' }}
+    if: ${{ needs.changes.outputs.inScope != 'true' }}
     runs-on: ubuntu-latest
     steps:
       - run: echo No-op
