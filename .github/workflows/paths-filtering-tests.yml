@@ -31,7 +31,7 @@ jobs:
       inScope: ${{ steps.filter.outputs.sourceCode == 'true' || steps.filter.outputs.self == 'true' }}
 
   # A required status check for when 'inScope' files are changed
-  when-changes-are-in-scope:
+  in-scope:
     # This job consumes the output of the 'changes' job
     needs: changes
     if: ${{ needs.changes.outputs.inScope == 'true' }}
@@ -39,7 +39,7 @@ jobs:
     steps:
       - run: echo Required files were changed!
   # A no-op variant of the required status check that is used if no 'inScope' files were changed
-  when-changes-are-in-scope-noop:
+  in-scope-noop:
     # This job consumes the output of the 'changes' job
     needs: changes
     if: ${{ needs.changes.outputs.inScope != 'true' }}
@@ -48,7 +48,7 @@ jobs:
       - run: echo Status check was skipped as the changes were not in scope
   # The job with name matching the required status check
   build:
-    needs: [when-changes-are-in-scope, when-changes-are-in-scope-noop]
+    needs: [in-scope, in-scope-noop]
     if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
