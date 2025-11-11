@@ -49,8 +49,9 @@ jobs:
   # The job with name matching the required status check
   build:
     needs: [in-scope, in-scope-noop]
-    if: ${{ always() }}
+    if: ${{ !failure() }}
     runs-on: ubuntu-latest
     steps:
-      - run: exit 0
+      - if: ${{ needs.in-scope.result == 'failure' }}
+        run: exit 1
 
