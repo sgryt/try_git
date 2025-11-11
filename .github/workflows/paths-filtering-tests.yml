@@ -23,8 +23,8 @@ jobs:
           filters: |
             audited:
               - '**'
-              - '!(*)'
-              - '!(.github/workflows/**)'
+              - '!*'
+              - '!.github/workflows/**'
             self:
               - '.github/workflows/paths-filtering-tests.yml'
           predicate-quantifier: 'every'
