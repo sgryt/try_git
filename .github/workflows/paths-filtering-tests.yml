@@ -1,0 +1,45 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Paths Filtering Tests
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "master" branch
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      audited: ${{ steps.filter.outputs.audited }}      
+    steps:
+      # For pull requests it's not necessary to checkout the code
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            audited:
+              - '**'
+              - '!*'
+              - '!.github/workflows/**'
+              - '.github/workflows/paths-filtering-tests.yml'
+
+  # run only if 'audited' files were changed
+  some-other-job:
+    needs: changes
+    name: a-required-status-check
+    if: ${{ needs.changes.outputs.audited == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo Audited files were changed!
+  # run no-op variant if no 'audited' files were changed
+  some-other-job-no-op:
+    needs: changes
+    name: a-required-status-check
+    if: ${{ needs.changes.outputs.audited != 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: exit 0
