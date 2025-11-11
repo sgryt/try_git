@@ -23,8 +23,8 @@ jobs:
           filters: |
             audited:
               - '**'
-              - '!*'
-              - '!.github/workflows/**'
+              - '!(*)'
+              - '!(.github/workflows/**)'
               - '.github/workflows/paths-filtering-tests.yml'
 
   # run only if 'audited' files were changed
@@ -42,4 +42,4 @@ jobs:
     if: ${{ needs.changes.outputs.audited != 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - run: exit 0
+      - run: No-op
