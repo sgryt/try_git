@@ -26,7 +26,7 @@ jobs:
               - '.github/workflows/paths-filtering-tests.yml'
           predicate-quantifier: 'every'
     outputs:
-      inScope: ${{ steps.shared.outputs.sorceCode == 'true' || steps.me.outputs.self == 'true' }}
+      inScope: ${{ steps.shared.outputs.sourceCode == 'true' || steps.me.outputs.self == 'true' }}
 
   # A required status check for when 'inScope' files are changed
   in-scope:
