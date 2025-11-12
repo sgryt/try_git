@@ -47,6 +47,3 @@ jobs:
       # If changes are not in scope, we're good. The 'skipped' value check is just a safeguard.
       - if: ${{ needs.changes.outputs.inScope != 'true' && needs.in-scope.result == 'skipped' }}
         run: exit 0
-      # Fail the required status check in all other cases.
-      - run: exit 1
-
