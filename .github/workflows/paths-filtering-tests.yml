@@ -38,23 +38,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo Required files were changed!
-  # A no-op variant of the required status check that is used if no 'inScope' files were changed
-  in-scope-noop:
-    # This job consumes the output of the 'changes' job
-    needs: changes
-    if: ${{ needs.changes.outputs.inScope != 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo Status check was skipped as the changes were not in scope
   # The job with name matching the required status check
   build:
-    needs: [in-scope, in-scope-noop]
+    needs: [changes, in-scope]
     if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
-      - if: >-
-          ${{
-            needs.in-scope.result == 'failure' ||
-            needs.in-scope-noop.result == 'failure' }}
-        run: exit 1
+      # If changes are not in scope, we're good. The 'skipped' value check is just a safeguard.
+      - if: ${{ needs.changes.outputs.inScope != 'true' && needs.in-scope.result == 'skipped' }}
+        run: exit 0
+      # Fail the required status check in all other cases.
+      - run: exit 1
 
