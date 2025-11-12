@@ -31,22 +31,19 @@ jobs:
       inScope: ${{ steps.filter.outputs.sourceCode == 'true' || steps.filter.outputs.self == 'true' }}
 
   # A required status check for when 'inScope' files are changed
-  some-lenghty-job-that-is-required-when-changes-are-in-scope:
+  in-scope:
     # This job consumes the output of the 'changes' job
     needs: changes
-      # The required status check name MUST MATCH what is set up in the GitHub UI
-    name: build
     if: ${{ needs.changes.outputs.inScope == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - run: echo Required files were changed!
-  # A no-op variant of the required status check that is used if no 'inScope' files were changed
-  some-lenghty-job-that-is-required-when-changes-are-in-scope-no-op:
-    # This job consumes the output of the 'changes' job
-    needs: changes
-      # The no-op variant MUST HAVE the same name as the required status check it is skipping
-    name: build
-    if: ${{ needs.changes.outputs.inScope != 'true' }}
+  # The job with name matching the required status check
+  build:
+    needs: [changes, in-scope]
+    if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
-      - run: echo Status check was skipped as the changes were not in scope
+      # If changes are not in scope, we're good. The 'skipped' value check is just a safeguard.
+      - if: ${{ needs.changes.outputs.inScope != 'true' && needs.in-scope.result == 'skipped' }}
+        run: exit 0
