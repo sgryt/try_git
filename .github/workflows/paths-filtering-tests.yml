@@ -43,5 +43,7 @@ jobs:
     needs: [changes, in-scope]
     if: ${{ always() }}
     runs-on: ubuntu-latest
+    env:
+      exitCode: ${{ (needs.in-scope.result == 'success' || needs.changes.outputs.inScope != 'true') && 1 || 0 }}
     steps:
-      - run: exit ${{ needs.in-scope.result == 'success' || needs.changes.outputs.inScope != 'true' }}
+      - run: exit ${{ env.exitCode }}
