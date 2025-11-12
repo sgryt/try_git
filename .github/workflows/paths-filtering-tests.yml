@@ -15,7 +15,7 @@ jobs:
       - uses: dorny/paths-filter@v3
         id: shared
         with:
-          filters: .github/sharedPathFilter.yaml
+          filters: .github/sharedPathFilter.yml
           predicate-quantifier: 'every'
       - uses: dorny/paths-filter@v3
         id: me
