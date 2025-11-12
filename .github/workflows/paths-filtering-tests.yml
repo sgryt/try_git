@@ -38,6 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo Required files were changed!
+      - run: exit 1
   # The job with name matching the required status check
   build:
     needs: [changes, in-scope]
