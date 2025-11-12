@@ -43,7 +43,10 @@ jobs:
     needs: [changes, in-scope]
     if: ${{ always() }}
     runs-on: ubuntu-latest
+    env:
+      checkPassed: ${{ needs.in-scope.result == 'success' || needs.changes.outputs.inScope != 'true' }}
     steps:
-      # If changes are not in scope, we're good. The 'skipped' value check is just a safeguard.
-      - if: ${{ needs.changes.outputs.inScope != 'true' && needs.in-scope.result == 'skipped' }}
+      - if: ${{ env.checkPassed }}
         run: exit 0
+      - if: ${{ !env.checkPassed }}
+        run: exit 1
