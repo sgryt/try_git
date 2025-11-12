@@ -11,26 +11,21 @@ jobs:
     permissions:
       pull-requests: read
     steps:
-      # For pull requests it's not necessary to checkout the code
+      - uses: actions/checkout@v5
       - uses: dorny/paths-filter@v3
-        id: filter
+        id: shared
+        with:
+          filters: .github/sharedPathFilter.yaml
+      - uses: dorny/paths-filter@v3
+        id: me
         with:
           filters: |
-            sourceCode:
-              # Everything
-              - '**'
-              # Except stuff at the root of the repo
-              - '!*'
-              # Exclude changes to workflows in general
-              - '!.github/workflows/**'
-            # Alternative representation of the sourceCode list:
-            sourceCode1: ['**', '!*', '!.github/workflows/**']
             self:
               # Include changes to THIS workflow
               - '.github/workflows/paths-filtering-tests.yml'
           predicate-quantifier: 'every'
     outputs:
-      inScope: ${{ steps.filter.outputs.sourceCode == 'true' || steps.filter.outputs.self == 'true' }}
+      inScope: ${{ steps.shared.outputs.sorceCode == 'true' || steps.me.outputs.self == 'true' }}
 
   # A required status check for when 'inScope' files are changed
   in-scope:
