@@ -23,6 +23,8 @@ jobs:
               - '!*'
               # Exclude changes to workflows in general
               - '!.github/workflows/**'
+            # Alternative representation of the sourceCode list:
+            sourceCode1: ['**'`, '!*', '!.github/workflows/**']
             self:
               # Include changes to THIS workflow
               - '.github/workflows/paths-filtering-tests.yml'
