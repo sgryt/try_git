@@ -44,9 +44,12 @@ jobs:
     if: ${{ always() }}
     runs-on: ubuntu-latest
     env:
-      checkPassed: ${{ needs.in-scope.result == 'success' || needs.changes.outputs.inScope != 'true' }}
+      checksPassed: >-
+        ${{
+          needs.in-scope.result == 'success' ||
+          needs.changes.outputs.inScope != 'true'
+        }}
     steps:
-      - if: ${{ env.checkPassed == 'true' }}
-        run: exit 0
-      - if: ${{ env.checkPassed == 'false' }}
-        run: exit 1
+      - name: Pass iff required checks do
+        run: if [ '${{ env.checksPassed }}' = 'true' ]; then exit 0; else exit 1; fi
+        shell: bash
