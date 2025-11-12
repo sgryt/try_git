@@ -44,6 +44,4 @@ jobs:
     if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
-      # If changes are not in scope, we're good. The 'skipped' value check is just a safeguard.
-      - if: ${{ needs.changes.outputs.inScope != 'true' && needs.in-scope.result == 'skipped' }}
-        run: exit 0
+      - run: exit ${{ needs.in-scope.result == 'success' || needs.changes.outputs.inScope != 'true' }}
