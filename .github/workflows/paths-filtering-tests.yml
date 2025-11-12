@@ -47,8 +47,8 @@ jobs:
       checksPassed: ${{ needs.in-scope.result == 'success' || needs.changes.outputs.inScope != 'true' }}
     steps:
       - if: ${{ env.checksPassed == 'true' }}
-        name: Required Status Checks Passed
+        name: Pass if required checks do
         run: exit 0
       - if: ${{ env.checksPassed == 'false' }}
-        name: Required Status Checks Failed
+        name: Fail if required checks do
         run: exit 1
