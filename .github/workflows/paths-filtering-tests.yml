@@ -44,6 +44,9 @@ jobs:
     if: ${{ always() }}
     runs-on: ubuntu-latest
     env:
-      exitCode: ${{ (needs.in-scope.result == 'success' || needs.changes.outputs.inScope != 'true') && 0 || 1 }}
+      checkPassed: ${{ needs.in-scope.result == 'success' || needs.changes.outputs.inScope != 'true' }}
     steps:
-      - run: exit ${{ env.exitCode }}
+      - if: ${{ env.checkPassed }}
+        run: exit 0
+      - if: ${{ !env.checkPassed }}
+        run: exit 1
